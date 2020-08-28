@@ -2,13 +2,13 @@ version: '3'
 services:
   producer:
     build: .
-    command: python3 webchecker/producer.py
+    command: python3 -mwebchecker producer
     environment:
       - KAFKA_HOST=${KAFKA_HOST}
       - KAFKA_PORT=${KAFKA_PORT}
   consumer:
     build: .
-    command: python3 webchecker/consumer.py
+    command: python3 -mwebchecker consumer
     environment:
       - POSTGRESQL_URI=${POSTGRESQL_URI}
       - KAFKA_HOST=${KAFKA_HOST}

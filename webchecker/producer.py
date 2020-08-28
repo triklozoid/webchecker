@@ -6,7 +6,7 @@ import time
 import requests
 from kafka import KafkaProducer
 
-import logger
+# import logger
 
 log = logging.getLogger(__name__)
 
@@ -30,8 +30,9 @@ def check(site):
     producer.send('test', json.dumps(message).encode('utf-8'))
 
 
-while True:
-    for site in sites:
-        check(site)
+def run_producer():
+    while True:
+        for site in sites:
+            check(site)
 
-    time.sleep(10)
+        time.sleep(10)

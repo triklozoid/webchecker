@@ -6,8 +6,6 @@ import psycopg2
 from kafka import KafkaConsumer
 from psycopg2.extras import RealDictCursor
 
-import logger
-
 log = logging.getLogger(__name__)
 
 bootstrap_servers = "{}:{}".format(os.getenv('KAFKA_HOST'), os.getenv('KAFKA_PORT'))
@@ -27,20 +25,22 @@ consumer = KafkaConsumer(
 
 uri = os.getenv('POSTGRESQL_URI')
 
-db_conn = psycopg2.connect(uri)
-c = db_conn.cursor(cursor_factory=RealDictCursor)
 
-while True:
-    raw_msgs = consumer.poll(timeout_ms=1000)
-    for tp, msgs in raw_msgs.items():
-        for msg in msgs:
-            msg_dict = json.loads(msg.value)
-            c.execute(
-                "INSERT INTO sites (site, status_code) VALUES (%s, %s)",
-                (msg_dict["site"], msg_dict['status_code']),
-            )
-            log.info("Received: {}".format(msg_dict))
+def run_consumer():
+    db_conn = psycopg2.connect(uri)
+    c = db_conn.cursor(cursor_factory=RealDictCursor)
 
-    db_conn.commit()
+    while True:
+        raw_msgs = consumer.poll(timeout_ms=1000)
+        for tp, msgs in raw_msgs.items():
+            for msg in msgs:
+                msg_dict = json.loads(msg.value)
+                c.execute(
+                    "INSERT INTO sites (site, status_code) VALUES (%s, %s)",
+                    (msg_dict["site"], msg_dict['status_code']),
+                )
+                log.info("Received: {}".format(msg_dict))
+
+        db_conn.commit()
 
 consumer.commit()

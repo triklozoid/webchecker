@@ -1,0 +1,14 @@
+version: '3'
+services:
+  producer:
+    build: .
+    command: python3 app/producer.py
+  consumer:
+    build: .
+    command: python3 app/consumer.py
+    environment:
+      - POSTGRESQL_URI=${POSTGRESQL_URI}
+      - KAFKA_HOST=${KAFKA_HOST}
+      - KAFKA_PORT=${KAFKA_PORT}
+
+

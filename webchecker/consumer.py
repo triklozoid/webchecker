@@ -1,9 +1,14 @@
 import json
+import logging
 import os
 
 import psycopg2
 from kafka import KafkaConsumer
 from psycopg2.extras import RealDictCursor
+
+import logger
+
+log = logging.getLogger(__name__)
 
 bootstrap_servers = "{}:{}".format(os.getenv('KAFKA_HOST'), os.getenv('KAFKA_PORT'))
 
@@ -34,7 +39,7 @@ while True:
                 "INSERT INTO sites (site, status_code) VALUES (%s, %s)",
                 (msg_dict["site"], msg_dict['status_code']),
             )
-            print("Received: {}".format(msg_dict))
+            log.info("Received: {}".format(msg_dict))
 
     db_conn.commit()
 

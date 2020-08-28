@@ -1,9 +1,14 @@
-#!/usr/bin/env python3
 import json
+import logging
+import os
 import time
 
 import requests
 from kafka import KafkaProducer
+
+import logger
+
+log = logging.getLogger(__name__)
 
 sites = ['https://google.com', 'https://yandex.ru']
 
@@ -20,7 +25,7 @@ producer = KafkaProducer(
 
 def check(site):
     result = requests.get(site)
-    print(result)
+    log.info(result)
     message = {'status_code': result.status_code, 'site': site}
     producer.send('test', json.dumps(message).encode('utf-8'))
 

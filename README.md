@@ -1,4 +1,6 @@
 ### Website-checker
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/triklozoid/webchecker/Python%20application)
+
 
 #### Howto run project
 

@@ -3,14 +3,19 @@ services:
   producer:
     build: .
     command: python3 -mwebchecker producer
+    volumes:
+      - .:/code
     environment:
+      - DATABASE_URL=${DATABASE_URL}
       - KAFKA_HOST=${KAFKA_HOST}
       - KAFKA_PORT=${KAFKA_PORT}
   consumer:
     build: .
     command: python3 -mwebchecker consumer
+    volumes:
+      - .:/code
     environment:
-      - POSTGRESQL_URI=${POSTGRESQL_URI}
+      - DATABASE_URL=${DATABASE_URL}
       - KAFKA_HOST=${KAFKA_HOST}
       - KAFKA_PORT=${KAFKA_PORT}
 

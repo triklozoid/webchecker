@@ -11,15 +11,15 @@ consumer = KafkaConsumer(
     client_id="demo-client-1",
     group_id="demo-group",
     security_protocol="SSL",
-    ssl_cafile="/code/certs/ca.pem",
-    ssl_certfile="/code/certs/service.cert",
-    ssl_keyfile="/code/certs/service.key",
+    ssl_cafile="./certs/ca.pem",
+    ssl_certfile="./certs/service.cert",
+    ssl_keyfile="./certs/service.key",
 )
 
 producer = KafkaProducer(
     bootstrap_servers=bootstrap_servers,
     security_protocol="SSL",
-    ssl_cafile="/code/certs/ca.pem",
-    ssl_certfile="/code/certs/service.cert",
-    ssl_keyfile="/code/certs/service.key",
+    ssl_cafile="./certs/ca.pem",
+    ssl_certfile="./certs/service.cert",
+    ssl_keyfile="./certs/service.key",
 )

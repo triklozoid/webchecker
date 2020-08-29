@@ -31,5 +31,14 @@ jobs:
     - name: Test with pytest
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        KAFKA_HOST: ${{ secrets.KAFKA_HOST }}
+        KAFKA_PORT: ${{ secrets.KAFKA_PORT }}
+        CA_PEM: ${{ secrets.CA_PEM }}
+        SERVICE_CERT: ${{ secrets.SERVICE_CERT }}
+        SERVICE_KEY: ${{ secrets.SERVICE_KEY }}
       run: |
+        mkdir certs
+        echo "$CA_PEM" > certs/ca.pem
+        echo "$SERVICE_CERT" > certs/service.cert
+        echo "$SERVICE_KEY" > certs/service.key
         pytest --cov-report term --cov=webchecker

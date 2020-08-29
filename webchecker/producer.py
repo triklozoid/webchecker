@@ -8,16 +8,27 @@ from kafka import KafkaProducer
 
 from webchecker.database import db
 from webchecker.kafka import producer
-from webchecker.schemas import Site
+from webchecker.schemas import Metric, Site
 
 log = logging.getLogger(__name__)
 
 
 def check(site: Site):
-    result = requests.get(site.url)
-    log.info(result)
-    message = {"status_code": result.status_code, "site_id": site.id}
-    producer.send("test", json.dumps(message).encode("utf-8"))
+    try:
+        result = requests.get(site.url, timeout=5)
+    except Exception as e:
+        metric = Metric(
+            site_id=site.id,
+            error=e.__class__.__name__,
+        )
+    else:
+        metric = Metric(
+            status_code=result.status_code,
+            site_id=site.id,
+            request_time=result.elapsed.total_seconds(),
+        )
+    log.info(metric)
+    producer.send("test", metric.json().encode("utf-8"))
 
 
 def get_sites():

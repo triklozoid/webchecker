@@ -22,7 +22,12 @@ def run_consumer():
 
                 with db.cursor() as c:
                     c.execute(
-                        "INSERT INTO metrics (site_id, status_code) VALUES (%s, %s)",
-                        (metric.site_id, metric.status_code),
+                        "INSERT INTO metrics (site_id, status_code, request_time, error) VALUES (%s, %s, %s, %s)",
+                        (
+                            metric.site_id,
+                            metric.status_code,
+                            metric.request_time,
+                            metric.error,
+                        ),
                     )
         db.commit()

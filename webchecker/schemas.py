@@ -8,4 +8,6 @@ class Site(BaseModel):
 
 class Metric(BaseModel):
     site_id: int
-    status_code: int
+    status_code: int = None
+    request_time: float = None
+    error: str = None

@@ -28,7 +28,7 @@ def check(site: Site):
             request_time=result.elapsed.total_seconds(),
         )
     log.info(metric)
-    producer.send("test", metric.json().encode("utf-8"))
+    return metric
 
 
 def get_sites():
@@ -41,6 +41,7 @@ def get_sites():
 def run_producer():
     while True:
         for site in get_sites():
-            check(site)
+            metric = check(site)
+            producer.send("test", metric.json().encode("utf-8"))
 
         time.sleep(10)

@@ -3,44 +3,26 @@ import logging
 import os
 
 import psycopg2
-from kafka import KafkaConsumer
 from psycopg2.extras import RealDictCursor
+
+from webchecker.database import db
+from webchecker.kafka import consumer
+from webchecker.schemas import Metric
 
 log = logging.getLogger(__name__)
 
-bootstrap_servers = "{}:{}".format(os.getenv('KAFKA_HOST'), os.getenv('KAFKA_PORT'))
-
-consumer = KafkaConsumer(
-    "test",
-    auto_offset_reset="earliest",
-    bootstrap_servers=bootstrap_servers,
-    client_id="demo-client-1",
-    group_id="demo-group",
-    security_protocol="SSL",
-    ssl_cafile="/code/certs/ca.pem",
-    ssl_certfile="/code/certs/service.cert",
-    ssl_keyfile="/code/certs/service.key",
-)
-
-
-uri = os.getenv('POSTGRESQL_URI')
-
 
 def run_consumer():
-    db_conn = psycopg2.connect(uri)
-    c = db_conn.cursor(cursor_factory=RealDictCursor)
-
     while True:
         raw_msgs = consumer.poll(timeout_ms=1000)
         for tp, msgs in raw_msgs.items():
             for msg in msgs:
-                msg_dict = json.loads(msg.value)
-                c.execute(
-                    "INSERT INTO sites (site, status_code) VALUES (%s, %s)",
-                    (msg_dict["site"], msg_dict['status_code']),
-                )
-                log.info("Received: {}".format(msg_dict))
+                log.info("Received: {}".format(msg.value))
+                metric = Metric.parse_raw(msg.value)
 
-        db_conn.commit()
-
-consumer.commit()
+                with db.cursor() as c:
+                    c.execute(
+                        "INSERT INTO metrics (site_id, status_code) VALUES (%s, %s)",
+                        (metric.site_id, metric.status_code),
+                    )
+        db.commit()

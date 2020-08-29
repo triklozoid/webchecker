@@ -1,7 +1,6 @@
-import os
-
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-uri = os.getenv('DATABASE_URL')
-db = psycopg2.connect(uri, cursor_factory=RealDictCursor)
+from webchecker import settings
+
+db = psycopg2.connect(settings.DATABASE_URL, cursor_factory=RealDictCursor)

@@ -2,12 +2,12 @@ import os
 
 from kafka import KafkaConsumer, KafkaProducer
 
-bootstrap_servers = "{}:{}".format(os.getenv("KAFKA_HOST"), os.getenv("KAFKA_PORT"))
+from webchecker import settings
 
 consumer = KafkaConsumer(
-    "test",
+    settings.KAFKA_METRICS_TOPIC,
     auto_offset_reset="earliest",
-    bootstrap_servers=bootstrap_servers,
+    bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
     client_id="demo-client-1",
     group_id="demo-group",
     security_protocol="SSL",
@@ -17,7 +17,7 @@ consumer = KafkaConsumer(
 )
 
 producer = KafkaProducer(
-    bootstrap_servers=bootstrap_servers,
+    bootstrap_servers=settings.KAFKA_BOOTSTRAP_SERVERS,
     security_protocol="SSL",
     ssl_cafile="./certs/ca.pem",
     ssl_certfile="./certs/service.cert",

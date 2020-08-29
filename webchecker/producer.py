@@ -6,6 +6,7 @@ import time
 import requests
 from kafka import KafkaProducer
 
+from webchecker import settings
 from webchecker.database import db
 from webchecker.kafka import producer
 from webchecker.schemas import Metric, Site
@@ -13,9 +14,9 @@ from webchecker.schemas import Metric, Site
 log = logging.getLogger(__name__)
 
 
-def check(site: Site):
+def check_site(site: Site):
     try:
-        result = requests.get(site.url, timeout=5)
+        result = requests.get(site.url, timeout=settings.SITE_CHECK_TIMEOUT)
     except Exception as e:
         metric = Metric(
             site_id=site.id,
@@ -38,10 +39,10 @@ def get_sites():
             yield Site(**site_data)
 
 
-def run_producer():
+def run_producer(args):
     while True:
         for site in get_sites():
-            metric = check(site)
-            producer.send("test", metric.json().encode("utf-8"))
+            metric = check_site(site)
+            producer.send(settings.KAFKA_METRICS_TOPIC, metric.json().encode("utf-8"))
 
-        time.sleep(10)
+        time.sleep(settings.SLEEP_AFTER_CHECK)

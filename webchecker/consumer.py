@@ -12,7 +12,7 @@ from webchecker.schemas import Metric
 log = logging.getLogger(__name__)
 
 
-def run_consumer():
+def run_consumer(args):
     while True:
         raw_msgs = consumer.poll(timeout_ms=1000)
         for tp, msgs in raw_msgs.items():

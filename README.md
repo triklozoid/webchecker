@@ -22,10 +22,29 @@ KAFKA_PORT=21388
 $ ls certs
 ca.pem  service.cert  service.key
 ```
+##### Apply database migrations
+
+```
+dbmate migrate
+```
 
 ##### Run
 
 ```
-docker-compose up
+make run
 ```
+
+##### Get bash shell with ready-to-use environment
+```
+make sh
+```
+
+#### TODO
+- more tests
+- coverage badge
+- statsd based metrics for monitoring
+- more logging
+- start passing metrics from ThreadPool to kafka before all sites checked
+- handling database queries exceptions
+- launch new database and kafka instances for every tests run
 

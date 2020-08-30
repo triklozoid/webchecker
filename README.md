@@ -39,6 +39,12 @@ make run
 make sh
 ```
 
+#### Tests
+Tests run by github actions on every commit, to manual local run use:
+```
+make test
+```
+
 #### TODO
 - more tests
 - coverage badge

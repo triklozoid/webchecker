@@ -1,5 +1,6 @@
 import logging
 import time
+from multiprocessing.dummy import Pool as ThreadPool
 
 import requests
 
@@ -38,8 +39,11 @@ def get_sites():
 
 def run_producer(args):
     while True:
-        for site in get_sites():
-            metric = check_site(site)
+        pool = ThreadPool(settings.PRODUCER_THREAD_POOL_SIZE)
+
+        metrics = pool.map(check_site, get_sites())
+
+        for metric in metrics:
             producer.send(settings.KAFKA_METRICS_TOPIC, metric.json().encode("utf-8"))
 
         time.sleep(settings.SLEEP_AFTER_CHECK)

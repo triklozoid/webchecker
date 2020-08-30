@@ -1,5 +1,3 @@
-import os
-
 from kafka import KafkaConsumer, KafkaProducer
 
 from webchecker import settings

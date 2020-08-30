@@ -1,10 +1,7 @@
-import json
 import logging
-import os
 import time
 
 import requests
-from kafka import KafkaProducer
 
 from webchecker import settings
 from webchecker.database import db

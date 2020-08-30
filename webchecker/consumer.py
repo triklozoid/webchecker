@@ -1,9 +1,4 @@
-import json
 import logging
-import os
-
-import psycopg2
-from psycopg2.extras import RealDictCursor
 
 from webchecker.database import db
 from webchecker.kafka import consumer

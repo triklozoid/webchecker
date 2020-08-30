@@ -5,7 +5,7 @@ from webchecker.schemas import Site
 
 
 def test(requests_mock):
-    site = Site(id=1, url='https://example.com/')
+    site = Site(id=1, url="https://example.com/")
     requests_mock.get(site.url)
     metric = check_site(site)
 
@@ -13,8 +13,9 @@ def test(requests_mock):
     assert metric.error is None
     assert metric.site_id == site.id
 
+
 def test_error(requests_mock):
-    site = Site(id=1, url='https://example.com/')
+    site = Site(id=1, url="https://example.com/")
     requests_mock.get(site.url, exc=requests.exceptions.ConnectTimeout)
     metric = check_site(site)
 
